@@ -6,16 +6,17 @@
 
 from tabulate import tabulate
 from utils.dummy_data import get_dummy_data
+from datetime import datetime
 import os
 
 # /===== Feature Program =====/
 def view_product():
     """
-    Display the list of products in a formatted table.
+        Display the list of products in a formatted table.
 
-    This function retrieves all products from the global `data` list 
-    and displays their details in a structured table format using the 
-    `tabulate` library. The table includes
+        This function retrieves all products from the global `data` list 
+        and displays their details in a structured table format using the 
+        `tabulate` library. The table includes
     """
     table_data = [
         [
@@ -35,6 +36,21 @@ def view_product():
     print(tabulate(table_data, headers=headers, tablefmt="pretty",stralign='left'))
 
 def sort_data_by_id(input_id):
+    """
+        Sorts and displays product information based on the given product ID.
+
+        This function searches for a product in the dataset that matches the provided
+        product ID. If a match is found, it prints the details of the product in a
+        formatted table. The displayed information includes the product ID, name,
+        description, price, stock quantity, date received, category, and total sales.
+
+        Args:
+            input_id (str or int): The unique identifier of the product to be searched.
+
+        Returns:
+            bool: Returns True if the product with the given ID is found and displayed,
+                otherwise returns False if no matching product is found.
+    """
     for product in data:
         if product["product_id"] == input_id:
             print(tabulate([[product["product_id"], product["product_name"], product["description"], 
@@ -167,7 +183,7 @@ def delete_product(input_id):
             return
     
     print("Error: Product ID is not Found")
-            
+
 
 # /===== Main Program =====/
 def main():
@@ -237,10 +253,11 @@ def main():
                         user_input_menu_add = int(input("Enter your choice: "))
 
                         if user_input_menu_add == 1:
+                            existing_data = {product["product_id"] for product in data}
                             while True: 
                                 try:
                                     input_id = int(input("Please Enter Product ID: "))
-                                    if any(product["product_id"] == input_id for product in data):
+                                    if input_id in existing_data:
                                         print(f"Error: Product ID {input_id} already exist.")
                                         continue
                                     break
@@ -249,9 +266,26 @@ def main():
                         
                             input_name = input("Please Enter Product Name: ")
                             input_desc = input("Please Enter Product Description: ")
-                            input_price = input("Please Enter Product Price: ")
-                            input_stock = input("Please Enter Product Stock: ")
-                            input_date_received = input("Please Enter Product Date Received: ")
+                            while True:
+                                try:
+                                    input_price = float(input("Please Enter Product Price: "))
+                                    if input_price < 0:
+                                        print("Error: Price cannot be negative.")
+                                        continue
+                                    break
+                                except ValueError:
+                                    print("Error: Please enter a valid number for the Price.")
+                            while True:
+                                try:
+                                    input_stock = int(input("Please Enter Product Stock: "))
+                                    if input_stock < 0:
+                                        print("Error: Stock cannot be negative.")
+                                        continue
+                                    break
+                                except ValueError:
+                                    print("Error: Please enter a valid number for the Stock.")
+
+                            input_date_received = input("Please Enter Product Date Received (YYYY-MM-DD): ")
                             input_category = input("Please Enter Product Category: ")
                             input_sales = input("Please Enter Product Sales: ")
 
@@ -285,10 +319,9 @@ def main():
                     user_input_menu_update = int(input("Enter your choice: "))
                     if user_input_menu_update == 1:
                         try:
-
                             input_id = int(input("Please Input Product ID: "))
                             update_product(input_id)
-                            
+                        
                         except ValueError:
                             print("Invalid Input, please enter the data in the correct format.")
 
