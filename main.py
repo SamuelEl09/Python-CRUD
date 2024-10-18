@@ -7,183 +7,323 @@
 from tabulate import tabulate
 from utils.dummy_data import get_dummy_data
 from datetime import datetime
+from utils.validation_func import get_user_options, get_user_int, confirm_data
 import os
+
+
+def clear_screen():
+    os.system('cls')
+
+# /===== Menu Program =====/
+def main_menu():
+    """Displays the main menu for the application.
+
+    This function prints a menu with the following options:
+    - View Product List
+    - Add Product
+    - Update Product
+    - Remove Product
+    - Exit
+    """
+    print(f"\n{'='*30}")
+    print(f"{' '*10}Main Menu")
+    print(f"{'='*30}")
+    print("1. View Product List")
+    print("2. Add Product")
+    print("3. Update Product")
+    print("4. Remove Product")
+    print("5. Exit\n")
+
+def view_product_menu():
+    """Displays a menu for viewing product information.
+
+    This function presents users with options to:
+    - Display all products
+    - Find a product by its ID
+
+    The user's choice determines the subsequent action.
+    """
+    while True:
+        print(f"\n{'='*30}")
+        print(f"{' '*7}View Product Menu")
+        print(f"{'='*30}")
+        print("1. Display All Product")
+        print("2. Find Product by Product Id")
+        print("3. Return to Main Menu\n")
+
+        user_input = get_user_options(3)
+
+        match user_input:
+            case 1:
+                view_product()
+            case 2:
+                sort_display_product_details()
+            case 3:
+                clear_screen()
+                break
+
+def add_product_menu():
+    """Displays a menu for adding products.
+
+    This function presents users with options to:
+    - Add a new product
+    - Return to the main menu
+
+    The user's choice determines the subsequent action.
+    """
+    while True:
+        print(f"\n{'='*30}")
+        print(f"{' '*7}Add Product Menu")
+        print(f"{'='*30}")
+        print("1. Add New Product")
+        print("2. Return to Main Menu\n")
+
+        user_input = get_user_options(2)
+
+        match user_input:
+            case 1:
+                add_product()
+            case 2:
+                clear_screen()
+                break
+
+def update_product_menu():
+    """Displays a menu for updating products.
+
+    This function presents users with options to:
+    - Update an existing product
+    - Return to the main menu
+
+    The user's choice determines the subsequent action.
+    """
+    while True:
+        print(f"\n{'='*30}")
+        print(f"{' '*5}Update Product Menu")
+        print(f"{'='*30}")
+        print("1. Update Product")
+        print("2. Return to Main Menu\n")
+
+        user_input = get_user_options(2)
+
+        match user_input:
+            case 1:
+                update_product()
+            case 2:
+                clear_screen()
+                break
+
+def remove_product_menu():
+    """Displays a menu for removing products.
+
+    This function presents users with options to:
+    - Remove a product from the store
+    - Return to the main menu
+
+    The user's choice determines the subsequent action.
+    """
+    while True:
+        print(f"\n{'='*30}")
+        print(f"{' '*5}Remove Product Menu")
+        print(f"{'='*30}")
+        print("1. Remove Product From Store")
+        print("2. Return to Main Menu\n")
+
+        user_input = get_user_options(2)
+
+        match user_input:
+            case 1:
+                remove_product()
+            case 2:
+                clear_screen()
+                break
 
 # /===== Feature Program =====/
 def view_product():
-    """
-        Display the list of products in a formatted table.
+    """Displays a table of product information.
 
-        This function retrieves all products from the global `data` list 
-        and displays their details in a structured table format using the 
-        `tabulate` library. The table includes
+    Args:
+        data (list): A list of dictionaries representing products.
+
+    This function creates a table with the following columns:
+    - ID
+    - Name
+    - Description
+    - Price (Rp)
+    - Stock
+    - Category
+    - Sales
+
+    The table is formatted using the `tabulate` library.
     """
     table_data = [
         [
-            product["product_id"],
-            product["product_name"],
+            product["id"],
+            product["name"],
             product["description"],
             product["price"],
             product["stock"],
-            product["date_received"],
             product["category"],
             product["sales"]
         ]
         for product in data
     ]
 
-    headers = ["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Date Received", "Category", "Sales"]
+    headers = ["ID", "Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"]
     print(tabulate(table_data, headers=headers, tablefmt="pretty",stralign='left'))
 
-def sort_data_by_id(input_id):
-    """
-        Sorts and displays product information based on the given product ID.
-
-        This function searches for a product in the dataset that matches the provided
-        product ID. If a match is found, it prints the details of the product in a
-        formatted table. The displayed information includes the product ID, name,
-        description, price, stock quantity, date received, category, and total sales.
-
-        Args:
-            input_id (str or int): The unique identifier of the product to be searched.
-
-        Returns:
-            bool: Returns True if the product with the given ID is found and displayed,
-                otherwise returns False if no matching product is found.
-    """
-    for product in data:
-        if product["product_id"] == input_id:
-            print(tabulate([[product["product_id"], product["product_name"], product["description"], 
-                             product["price"], product["stock"], product["date_received"], 
-                             product["category"], product["sales"]]],
-                             headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Date Received", "Category", "Sales"],
-                             tablefmt="pretty"))
-            return True
-        
-    return False
-
-def add_product(input_id, input_name, input_desc, input_price, input_stock, input_date_received, 
-                input_category, input_sales):
-    """
-    Add a new product to the product list.
-
-    This function creates a new product represented as a dictionary 
-    with the specified attributes and adds it to the global list of products.
-
-    The function assumes that the global variable `data` is a list of dictionaries,
-    where each dictionary represents a product.
+def sort_display_product_details():
+    """Displays product details based on a given product ID.
 
     Args:
-        input_id (str): Unique identifier for the product.
-        input_name (str): Name of the product.
-        input_desc (str): Description of the product.
-        input_price (float): Price of the product (in Rp).
-        input_stock (int): Available stock of the product.
-        input_date_received (str): Date the product was received (in YYYY-MM-DD format).
-        input_category (str): Category of the product.
-        input_sales (int): Number of products sold.
+        product_id (int): The ID of the product to search for.
 
-    Returns:
-        None
-
+    This function searches for the product with the specified ID and displays its details in a table format if found. 
+    If not found, an error message is printed.
     """
-    new_product ={
-            "product_id": input_id,
-            "product_name": input_name,
-            "description" : input_desc,
-            "price": input_price,
-            "stock": input_stock,
-            "date_received": input_date_received,
-            "category": input_category,
-            "sales": input_sales 
-    }
+    input_id = get_user_int("Please Enter Product ID: ")
+    product_found = find_product_by_id(input_id)
+
+    if product_found:
+        print("Product Details:")
+        print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
+                         product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
+                         headers=["ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
+                         tablefmt="pretty"))
+    else:
+        print(f"Product ID {input_id} is not found")
     
-    data.append(new_product)
-    print("Product added successfully\n")
-    view_product()
+def add_product():
+    """Adds a new product to the database.
 
-def update_product(input_id):
+    This function prompts the user for product details and saves the new product if the user confirms.
     """
-    Update product details based on the provided product ID.
+    input_id = get_user_int("Please Enter Product ID: ")
+    isExists = get_unique_id(input_id)
+    
+    if not isExists:
+        input_name = input("Please Enter Product Name: ")
+        input_desc = input("Please Enter Product Description: ")
+        input_price = get_user_int("Please Enter Product Price: ")
+        input_stock = get_user_int("Please Enter Product Stock: ")
+        input_category = input("Please Enter Product Category: ")
+        input_sales = get_user_int("Please Enter Product Sales: ")
 
-    This function searches for a product with the given `input_id` in the 
-    global `data` list and allows the user to update various details of 
-    the product. If the product is found, it displays the current details 
-    and prompts the user for new information. If the user leaves an input 
-    empty, the current value for that field remains unchanged.
+        input_confirm = confirm_data("You have entered new data. Would you like to save it?")
+
+        if input_confirm:
+            new_product ={
+                    "id": input_id,
+                    "name": input_name,
+                    "description" : input_desc,
+                    "price": input_price,
+                    "stock": input_stock,
+                    "category": input_category,
+                    "sales": input_sales 
+            }
+            data.append(new_product)
+            print("Product added successfully\n")
+    else:
+        print("Product ID already exists")
+        add_product()
+
+def find_product_by_id(input_id):
+    """Finds a product in the database by its ID.
 
     Args:
-        input_id (int/str): The ID of the product to update.
+        input_id (int): The ID of the product to search for.
 
     Returns:
-        None
+        dict: The product object if found, otherwise None.
     """
-    product_found = None
 
-    for product in data:
-        if product["product_id"] == input_id:
-            product_found = product
-            break
+    return next((product for product in data if product["id"] == input_id), None)
+
+def get_unique_id(input_id):
+    """Checks if a product ID is unique in the database.
+
+    Args:
+        input_id (int): The ID to check for uniqueness.
+
+    Returns:
+        bool: True if the ID is unique, False if it already exists.
+    """
+    return next((True for product in data if product["id"] == input_id), False)
+
+def update_product():
+    """Updates an existing product in the database.
+
+    This function prompts the user for the product ID and allows them to modify specific product details.
+
+    Args:
+        product_id (int): The ID of the product to update.
+
+    Returns:
+        bool: True if the product was successfully updated, False otherwise.
+    """
+    input_id = get_user_int("Please Enter Product ID: ")
+    isExists = get_unique_id(input_id)
+    
+    if not isExists:
+        print(f"Product ID {input_id} not found")
+        return
+    
+    product_found = next((product for product in data if product["id"] == input_id), None)
 
     if product_found:
         print("Current Product Details:")
-        print(tabulate([[product_found["product_id"], product_found["product_name"], product_found["description"], 
-                         product_found["price"], product_found["stock"], product_found["date_received"], 
-                         product_found["category"], product_found["sales"]]],
-                         headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Date Received", "Category", "Sales"],
-                         tablefmt="pretty"))
+        print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
+                        product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
+                        headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
+                        tablefmt="pretty"))
     
-        input_name = input("Please Enter Product Name (leave empty to keep current): ")
-        input_desc = input("Please Enter Product Description (leave empty to keep current): ")
-        input_price = input("Please Enter Product Price (leave empty to keep current): ")
-        input_stock = input("Please Enter Product Stock (leave empty to keep current): ")
-        input_date_received = input("Please Enter Product Date Received (leave empty to keep current): ")
-        input_category = input("Please Enter Product Category (leave empty to keep current): ")
-        input_sales = input("Please Enter Product Sales (leave empty to keep current): ")
+    input_confirm = confirm_data("Apakah anda melanjutkan proses update data?")
 
-        if input_name:
-            product_found["product_name"] = input_name
-        if input_desc:
-            product_found["description"] = input_desc
-        if input_price:
-            product_found["price"] = int(input_price) 
-        if input_stock:
-            product_found["stock"] = int(input_stock)
-        if input_date_received:
-            product_found["date_received"] = input_date_received
-        if input_category:
-            product_found["category"] = input_category
-        if input_sales:
-            product_found["sales"] = int(input_sales)
+    if input_confirm:
+        column_name = input("Enter Column Name: ")
 
-        print("Product details updated successfully.\n")
-        view_product()
+        if column_name in product_found:
+            new_data = input(f"Input New Data for {column_name}: ")
+            if column_name in ["price", "stock", "sales"]: 
+                new_data = get_user_int(new_data) 
+            product_found[column_name] = new_data
+            print("Product updated successfully.\n")
+            print("Update Product Details")    
+            print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
+                    product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
+                    headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
+                    tablefmt="pretty"))
+        else:
+            print("Invalid column name. Please try again.")
     else:
-        print("Error: Product is not Found")
+        ("Update Product Canceled")
 
-def delete_product(input_id):
-    """
-    Delete a product from the data list based on the provided product ID.
+def remove_product():
+    """Removes a product from the database.
 
-    This function searches for a product with the given `input_id` in the 
-    global `data` list. If the product is found, it removes the product 
-    from the list and displays the updated list of products.
+    This function prompts the user for the product ID and removes the corresponding product if it exists and the user confirms.
 
     Args:
-        input_id (int/str): The ID of the product to delete.
+        product_id (int): The ID of the product to remove.
 
     Returns:
-        None
+        bool: True if the product was successfully removed, False otherwise.
     """
-    for product in data:
-        if input_id == product["product_id"]:
-            data.remove(product)
-            print(f"Product ID {input_id} has been removed successfully")
-            view_product()
-            return
-    
-    print("Error: Product ID is not Found")
+    input_id = get_user_int("Please Enter Product ID: ")
+    isExists = get_unique_id(input_id)
 
+    if isExists:
+        input_confirm = confirm_data("You have entered new data. Would you like to save it?")
+        if input_confirm:
+            product_removed = find_product_by_id(input_id)
+            if product_removed:
+                data.remove(product_removed)
+                print(f"Product ID {input_id} has been removed successfully.")
+            else:
+                print("Error: Product not found after confirmation.")
+        else:
+            print("Product removal cancelled.")
+    else:
+        print(f"Product ID {input_id} does not exist.")
 
 # /===== Main Program =====/
 def main():
@@ -191,196 +331,28 @@ def main():
     """
     global data 
     data = get_dummy_data()
-
+    
+    clear_screen()
     while True:
-        print(f"\n{'='*30}")
-        print(f"{' '*10}Main Menu")
-        print(f"{'='*30}")
-        print("1. View Product List")
-        print("2. Add Product")
-        print("3. Update Product")
-        print("4. Remove Product")
-        print("5. Exit\n")
+        main_menu()
+        user_input = get_user_options(5)
 
-        try:
-            user_input_menu = int(input("Enter your choice: "))
-            if user_input_menu == 1:
-                os.system("cls")
-                while True:
-                    print(f"\n{'='*30}")
-                    print(f"{' '*7}View Product Menu")
-                    print(f"{'='*30}")
-                    print("1. Display All Product")
-                    print("2. Find Product by Product Id")
-                    print("3. Return to Main Menu\n")
-
-                    try:
-                        user_input_menu_view = int(input("Enter your choice: "))
-
-                        if user_input_menu_view == 1:
-                            view_product()
-                        elif user_input_menu_view == 2:
-                            while True:
-                                try: 
-                                    find_product_id = int(input("Please Enter Product ID: "))
-
-                                    if not sort_data_by_id(find_product_id):
-                                        print(f"Error: Product ID {find_product_id} is not found.")
-
-                                except ValueError:
-                                    print("Error: Please enter a valid Product ID")
-                                    break
-                                else:
-                                    break
-                        elif user_input_menu_view == 3:
-                            os.system("cls")
-                            break
-                        else: 
-                            print("Error: Please enter a valid option")
-                    except ValueError:
-                        print("Error: Please enter a number corresponding to the menu options ")
-
-            elif user_input_menu == 2:
-                os.system("cls")
-                while True:
-                    print(f"\n{'='*30}")
-                    print(f"{' '*7}Add Product Menu")
-                    print(f"{'='*30}")
-                    print("1. Add New Product")
-                    print("2. Return to Main Menu\n")
-
-                    try:
-                        user_input_menu_add = int(input("Enter your choice: "))
-
-                        if user_input_menu_add == 1:
-                            existing_data = {product["product_id"] for product in data}
-                            while True: 
-                                try:
-                                    input_id = int(input("Please Enter Product ID: "))
-                                    if input_id in existing_data:
-                                        print(f"Error: Product ID {input_id} already exist.")
-                                        continue
-                                    break
-                                except ValueError:
-                                    print("Error: Please enter a number for the Product ID.")
-                        
-                            input_name = input("Please Enter Product Name: ")
-                            input_desc = input("Please Enter Product Description: ")
-                            while True:
-                                try:
-                                    input_price = float(input("Please Enter Product Price: "))
-                                    if input_price < 0:
-                                        print("Error: Price cannot be negative.")
-                                        continue
-                                    break
-                                except ValueError:
-                                    print("Error: Please enter a valid number for the Price.")
-                            while True:
-                                try:
-                                    input_stock = int(input("Please Enter Product Stock: "))
-                                    if input_stock < 0:
-                                        print("Error: Stock cannot be negative.")
-                                        continue
-                                    break
-                                except ValueError:
-                                    print("Error: Please enter a valid number for the Stock.")
-
-                            input_date_received = input("Please Enter Product Date Received (YYYY-MM-DD): ")
-                            input_category = input("Please Enter Product Category: ")
-                            input_sales = input("Please Enter Product Sales: ")
-
-                            while True:
-                                saved_data = input("Is the data correct and ready to be saved? [Y/N]: ")
-                                if saved_data == 'Y':
-                                    add_product(input_id, input_name, input_desc, input_price, input_stock, input_date_received, input_category, input_sales)
-                                    break
-                                elif saved_data == 'N':
-                                    print("Data failed to save.")
-                                    break
-                                else:
-                                    print("Error: Invalid Input. Please enter 'Y' for Yes or 'N' for No.")
-                        elif user_input_menu_add == 2:
-                            os.system("cls")
-                            break
-                        else:
-                            print("Error: Please enter a valid option ")
-                    except ValueError:
-                        print("Error: Please enter a number corresponding to the menu options ")
-
-            elif user_input_menu == 3:
-                os.system("cls")
-                while True:
-                    print(f"\n{'='*30}")
-                    print(f"{' '*5}Update Product Menu")
-                    print(f"{'='*30}")
-                    print("1. Update Product")
-                    print("2. Return to Main Menu\n")
-
-                    user_input_menu_update = int(input("Enter your choice: "))
-                    if user_input_menu_update == 1:
-                        try:
-                            input_id = int(input("Please Input Product ID: "))
-                            update_product(input_id)
-                        
-                        except ValueError:
-                            print("Invalid Input, please enter the data in the correct format.")
-
-                    elif user_input_menu_update == 2:
-                        os.system("cls")
-                        break
-                    else:
-                        print("Error: Please enter a valid option")
-            elif user_input_menu == 4:
-                os.system("cls")
-                while True:
-                    print(f"\n{'='*30}")
-                    print(f"{' '*5}Remove Product Menu")
-                    print(f"{'='*30}")
-                    print("1. Remove Product From Store")
-                    print("2. Return to Main Menu\n")
-
-                    try:
-                        user_input_menu_remove = int(input("Enter your choice: "))
-                        if user_input_menu_remove == 1:    
-                            view_product()                        
-                            while True:
-                                try:
-                                    input_id = int(input("Please Input Product ID: "))
-                                    product_exists = any(product["product_id"] == input_id for product in data)
-                                    
-                                    if product_exists:
-                                        confirm = input(f"Are you sure you want to remove the product with ID {input_id}? [Y/N]: ").strip().upper()
-                                        if confirm == 'Y':
-                                            if delete_product(input_id): 
-                                                print("Product removed successfully.")
-                                            break 
-                                        elif confirm == 'N':
-                                            print("Product removal canceled.")
-                                            break
-                                        else:
-                                            print("Error: Invalid Input. Please enter 'Y' for Yes or 'N' for No.")
-                                    else:
-                                        print("Error: Product ID is not found.")
-                                except ValueError:
-                                    print("Error: Please Input Valid Product ID")
-
-                        elif user_input_menu_remove == 2:
-                            print("Thank yaa")
-                            break
-                        else:
-                            print("Error: Please enter a valid option")
-                    
-                    except ValueError:
-                        print("Error: Please enter a number corresponding to the menu options ")
-
-            elif user_input_menu == 5:
-                print("Exiting...")
-                break
-            else:
-                print("Error: Please enter a valid option")
-
-        except ValueError:
-            print("Error: Please enter a number corresponding to the menu options ")
+        match user_input:
+            case 1:
+                clear_screen()
+                view_product_menu()
+            case 2:
+                clear_screen()
+                add_product_menu()
+            case 3:
+                clear_screen()
+                update_product_menu()
+            case 4:
+                clear_screen()
+                remove_product_menu()
+            case 5:
+                print("See Ya Capt!")
+                return
 
 if __name__ == "__main__":
     main()
