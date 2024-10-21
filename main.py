@@ -184,11 +184,8 @@ def sort_display_product_details():
     product_found = find_product_by_id(input_id)
 
     if product_found:
-        print("Product Details:")
-        print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
-                         product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
-                         headers=["ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
-                         tablefmt="pretty"))
+        get_product_id("Product Details:",product_found)
+
     else:
         print(f"Product ID {input_id} is not found")
     
@@ -198,9 +195,9 @@ def add_product():
     This function prompts the user for product details and saves the new product if the user confirms.
     """
     input_id = get_user_int("Please Enter Product ID: ")
-    isExists = get_unique_id(input_id)
+    exists = get_unique_id(input_id)
     
-    if not isExists:
+    if not exists:
         input_name = input("Please Enter Product Name: ")
         input_desc = input("Please Enter Product Description: ")
         input_price = get_user_int("Please Enter Product Price: ")
@@ -223,7 +220,7 @@ def add_product():
             data.append(new_product)
             print("Product added successfully\n")
     else:
-        print("Product ID already exists")
+        print(f"Product ID {input_id} already exists")
         add_product()
 
 def find_product_by_id(input_id):
@@ -249,6 +246,13 @@ def get_unique_id(input_id):
     """
     return next((True for product in data if product["id"] == input_id), False)
 
+def get_product_id(prompt, product):
+    print(prompt)
+    print(tabulate([[product["id"], product["name"], product["description"], 
+        product["price"], product["stock"], product["category"], product["sales"]]],
+        headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
+        tablefmt="pretty"))
+    
 def update_product():
     """Updates an existing product in the database.
 
@@ -260,42 +264,40 @@ def update_product():
     Returns:
         bool: True if the product was successfully updated, False otherwise.
     """
-    input_id = get_user_int("Please Enter Product ID: ")
-    isExists = get_unique_id(input_id)
     
-    if not isExists:
+    input_id = get_user_int("Please Enter Product ID: ")
+    exists = get_unique_id(input_id)
+    
+    if not exists:
         print(f"Product ID {input_id} not found")
         return
     
-    product_found = next((product for product in data if product["id"] == input_id), None)
+    product_found =find_product_by_id(input_id)
 
     if product_found:
-        print("Current Product Details:")
-        print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
-                        product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
-                        headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
-                        tablefmt="pretty"))
-    
-    input_confirm = confirm_data("Apakah anda melanjutkan proses update data?")
+        get_product_id("Current Product Details:", product_found)
+
+    input_confirm = confirm_data("Would you like to continue with the data update process?")
 
     if input_confirm:
-        column_name = input("Enter Column Name: ")
+        update_product_details(product_found)
+        
+def update_product_details(product):
+    column_name = input("Enter Column Name: ").strip().lower()
 
-        if column_name in product_found:
-            new_data = input(f"Input New Data for {column_name}: ")
-            if column_name in ["price", "stock", "sales"]: 
-                new_data = get_user_int(new_data) 
-            product_found[column_name] = new_data
-            print("Product updated successfully.\n")
-            print("Update Product Details")    
-            print(tabulate([[product_found["id"], product_found["name"], product_found["description"], 
-                    product_found["price"], product_found["stock"], product_found["category"], product_found["sales"]]],
-                    headers=["Product ID", "Product Name", "Description", "Price (Rp)", "Stock", "Category", "Sales"],
-                    tablefmt="pretty"))
+    if column_name in product:
+        new_data = input(f"Input New Data for {column_name}: ")
+        if column_name in ["price", "stock", "sales"]:
+            new_data = get_user_int(new_data)
+
+        if confirm_data("Would you like to save the latest data?"):
+            product[column_name] = new_data
+            print("Product updated successfully.")
+            get_product_id("Updated Product Details", product)
         else:
-            print("Invalid column name. Please try again.")
+            print("Update Product Canceled")
     else:
-        ("Update Product Canceled")
+        print("Invalid column name. Please try again.")
 
 def remove_product():
     """Removes a product from the database.
@@ -309,9 +311,9 @@ def remove_product():
         bool: True if the product was successfully removed, False otherwise.
     """
     input_id = get_user_int("Please Enter Product ID: ")
-    isExists = get_unique_id(input_id)
+    exists = get_unique_id(input_id)
 
-    if isExists:
+    if exists:
         input_confirm = confirm_data("You have entered new data. Would you like to save it?")
         if input_confirm:
             product_removed = find_product_by_id(input_id)

@@ -1,61 +1,45 @@
-# Python CRUD Application for [Business Domain]
+# Python CRUD Application for Electronic Store
 
-A comprehensive Python application for managing [Data Entity] data with Create, Read, Update, and Delete (CRUD) operations.
+A comprehensive Python application for managing Product data with Create, Read, Update, and Delete (CRUD) operations.
 
 ## Business Understanding
 
-This project caters to the [Industry/Business Domain] industry, specifically addressing the need to manage [Data Entity] data efficiently. [Data Entity] plays a crucial role in [Explain the importance of data entity in business processes].
+This project caters to the Electronic Store industry, specifically addressing the need to manage Product data efficiently. Product plays a crucial role in business processes as it directly impacts inventory management, sales forecasting, and customer satisfaction. 
 
 **Benefits:**
 
 * Improved data accuracy and consistency
 * Streamlined data management processes
 * Enhanced decision-making through readily available data
-* ... (List additional benefits relevant to the business)
 
 **Target Users:**
 
-This application is designed for [Target Users] (e.g., sales representatives, inventory managers, customer support agents) within the organization to facilitate their [Tasks/Activities] related to [Data Entity].
+This application is designed for Staff and Store Owner within the organization to facilitate their tasks and activities related to product management.
 
 ## Features
 
 * **Create:**
-    * Add new [Data Entity] entries with essential details like [List relevant fields].
-    * Implement validation rules to ensure data integrity (if applicable, e.g., unique identifiers, data type checks).
+    * Add new Product entries with essential details like Product ID, Product Name, Descripion, Price, Stock, Category, and Sales.
+    * Implement validation rules to ensure data integrity in the product management application. Unique Key for Product ID. Integer type data for Price, Stock and Sales. String type data for Product Name, Description and Category.   
 * **Read:**
-    * Search and retrieve specific [Data Entity] records by applying filters based on [Searchable fields].
-    * Display comprehensive information for each [Data Entity] in a user-friendly format.
-    * Integrate pagination and sorting capabilities for large datasets (if applicable).
+    * Search and retrieve specific Product records by applying filters based on Product ID.
+    * Display comprehensive information for each Product in a user-friendly format.
 * **Update:**
-    * Modify existing [Data Entity] data to reflect changes in [Attributes/Properties].
+    * Modify existing Product data to reflect changes by column name.
     * Provide clear confirmation or error messages based on update success or failure.
 * **Delete:**
-    * Allow for the removal of unwanted [Data Entity] records with appropriate authorization checks (if applicable).
-    * Implement soft delete functionality to prevent permanent data loss (optional, depending on business needs).
-    * Consider offering data archiving capabilities (optional).
-* **Security:**
-    * Implement user authentication and authorization mechanisms (if sensitive data is involved) to control access to different CRUD operations.
-    * ... (Specify additional security features as needed)
-* **Reporting:**
-    * Generate reports or summaries based on [Data Entity] data to support [Business Functions] (optional).
-    * Export data in various formats (e.g., CSV, Excel) for further analysis (optional).
+    * Allow for the removal of unwanted Product records with appropriate authorization checks.
 
 ## Installation
 
 1. **Prerequisites:**
-    * Python version (specify the required version)
-    * Additional dependencies (list any required packages)
+    * Python version 3.12.4
 
 2. **Installation:**
     ```bash
-    git clone https://github.com/<your-username>/<your-repo-name>.git
-    cd <your-repo-name>
-    pip install -r requirements.txt  # If using a requirements.txt file
+    git clone https://github.com/SamuelEl09/Python_CRUD_Electronic_Store.git
+    cd Python_CRUD_Electronic_Store
     ```
-
-3. **Database Setup (if applicable):**
-    Follow specific instructions for configuring your database connection, aligning with the business's chosen database management system.
-
 ## Usage
 
 1. **Run the application:**
@@ -64,17 +48,21 @@ This application is designed for [Target Users] (e.g., sales representatives, in
     ```
 
 2. **CRUD Operations:**
-    * **Create:** Add a new [Data Entity] record, for example, a new customer in a customer management system, providing details like name, contact information, and preferences.
-    * **Read:** Search and retrieve customer information by name, ID, or other relevant criteria.
-    * **Update:** Modify customer details, such as updating their address or contact details.
-    * **Delete:** Remove a customer record from the system (with appropriate authorization, if applicable).
+    * **Create:** Add a new Product record, for example, a new product in a inventory management system, providing details like name, price, stock, descriptive, category and sales.
+    * **Read:** Search and retrieve prodcut information by product_id
+    * **Update:** Modify product details, such as updating their name, price, stock, descriptive, category and sales.
+    * **Delete:** Remove a product record from the system.
 
 ## Data Model
-This project utilizes a [Data Structure] (e.g., relational database, JSON documents) to represent [Data Entity] data. The following fields are typically stored:
-   * [Field 1]: (Data type) - Description of the field's purpose in the business context.
-   * [Field 2]: (Data type) - Description of the field's purpose in the business context.
-   * ... (List all relevant fields)
+This project utilizes a List Of Dictionary data type to represent Product data. The following fields are typically stored:
+   * [id]: (Int) - Unique Key for Product
+   * [name]: (String) - for product's name
+   * [description]: (String) - for the description of product
+   * [price]: (Integer) - price of the product
+   * [stock]: (Integer) - stock of the available product
+   * [category]: (string) - category of the product
+   * [sales]: (int) - total products that had been sold
 
 ## Contributing
-We welcome contributions to this project! Please feel free to open a pull request, sent to [your_email] or submit an issue if you encounter any problems or have suggestions for improvements.
+We welcome contributions to this project! Please feel free to open a pull request, sent to samuelelia0907@gmail.com or submit an issue if you encounter any problems or have suggestions for improvements.
 

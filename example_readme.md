@@ -1,10 +1,10 @@
-## Python CRUD Application for Inventory Management
+## Python CRUD Application for Inventory Management in Electronic Store
 
 A comprehensive Python application for managing inventory data with Create, Read, Update, and Delete (CRUD) operations.
 
 ## Business Understanding
 
-This project caters to businesses in various sectors (e.g., retail, manufacturing) by providing a streamlined solution for managing product inventory. Efficient inventory management ensures product availability, minimizes stockouts and overstocking, and optimizes ordering processes.
+This project caters to businesses in Electronic Store by providing a streamlined solution for managing product inventory. Efficient inventory management ensures product availability, minimizes stockouts and overstocking, and optimizes ordering processes.
 
 **Benefits:**
 
